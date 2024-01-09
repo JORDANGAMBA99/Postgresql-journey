@@ -1,0 +1,36 @@
+-- # Create a simple function
+-- percent_change = (new_value - old_value) / old_number
+
+-- Basic syntax of a function in SQL
+
+-- default value indicates the results we want to show
+-- returns instructs the function to return the data type numeric
+-- Language specifies which language we have written SQL
+-- Immutable indicates that the function wont be making any changes to the database
+
+create or replace function
+percent_change(new_value numeric,
+			   old_value numeric,
+			   decimal_places integer default 1)
+returns numeric as
+'select round(
+		((new_value - old_value)/ old_value)*100,decimal_places
+);'
+language sql
+immutable
+returns null on null input;
+
+select percent_change(110,108,2);
+-- answer is 1.85
+
+select c2010.geo_name,
+      c2010.state_us_abbreviation as st,
+	  c2010.p0010001 as pop_2010,
+	  percent_change(c2010.p0010001,c2000.p0010001) as pct_chg_func,
+	  round((cast(c2010.p0010001 as numeric(8,1)) - c2000.p0010001)
+	  /c2000.p0010001 * 100,1)as pct_chg_formula
+	  from us_counties_2010 c2010 inner join us_counties_2000 c2000
+	  on c2010.state_fips = c2000.state_fips
+	  and c2010.county_fips = c2000.county_fips
+	  order by pct_chg_func desc
+	  limit 5;
