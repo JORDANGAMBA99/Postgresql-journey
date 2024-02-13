@@ -1,0 +1,51 @@
+create table grades (
+student_id bigint,
+course_id bigint,
+course varchar(30) not null,
+grade varchar(5) not null,
+primary key (student_id,course_id)
+);
+
+select* from grades
+
+insert into grades
+values
+(1,1,'Biology 2','F'),
+(1,2,'English 11B','D'),
+(1,3,'World History 11B','C'),
+(1,4, 'Trig 2','B');
+
+create table grades_history(
+student_id bigint not null,
+course_id bigint not null,
+change_time timestamp with time zone not null,
+course varchar(30) not null,
+old_grade varchar(5) not null,
+new_grade varchar(5) not null,
+primary key (student_id,course_id,change_time)
+)
+
+create or replace function record_if_grade_changed()
+returns trigger as
+$$
+begin
+	if new.grade <>old.grade then
+	insert into grades_history (
+		student_id,
+		course_id,
+		change_time,
+		course,
+		old_grade,
+		new_grade)
+	Values
+		(old.studenT_id,
+		 old.course_id,
+		 now(),
+		 old.course,
+		 old.grade,
+		 new.grade);
+		 end if;
+		 return new;
+	 end;
+	 $$ language plpsql;
+		
