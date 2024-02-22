@@ -20,3 +20,28 @@ CREATE TABLE nyc_yellow_taxi_trips_2016_06_01 (
  improvement_surcharge numeric(9,2) NOT NULL,
  total_amount numeric(9,2) NOT NULL
 );
+COPY nyc_yellow_taxi_trips_2016_06_01 (
+ vendor_id,
+ tpep_pickup_datetime,
+ tpep_dropoff_datetime,
+ passenger_count,
+ trip_distance,
+ pickup_longitude,
+ pickup_latitude,
+ rate_code_id,
+ store_and_fwd_flag,
+ dropoff_longitude,
+ dropoff_latitude,
+ payment_type,
+ fare_amount,
+ extra,
+ mta_tax,
+ tip_amount,
+ tolls_amount,
+ improvement_surcharge,
+ total_amount 
+ )
+FROM 'C:\Data Science e-books\yellow_tripdata_2016_06_01.csv'
+WITH (FORMAT CSV, HEADER, DELIMITER ',');
+CREATE INDEX tpep_pickup_idx 
+ON nyc_yellow_taxi_trips_2016_06_01 (tpep_pickup_datetime);
